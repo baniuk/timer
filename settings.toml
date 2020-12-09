@@ -10,3 +10,5 @@ max_off_time = '60 minutes'
 min_on_time = '20 minutes'
 max_on_time = '90 minutes'
 wemo_address = '192.168.4.6'
+server_port = 8080
+server_address = '0.0.0.0'

@@ -234,4 +234,6 @@ def start(verbosity):
                       max_instances=1)
 
     scheduler.start()
-    app.run(host="localhost", port=8080, debug=False)
+    app.run(host=settings.server_address,
+            port=settings.server_port,
+            debug=False)

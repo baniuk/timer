@@ -15,7 +15,7 @@ WORKDIR /app
 
 COPY --from=build /build/pkg /app/pkg
 
-RUN pip install -f /app/pkg wemo-timer && \
+RUN pip install --no-index -f /app/pkg wemo-timer && \
     rm -rf /app/pkg
 
 COPY settings.toml /app/settings.toml
