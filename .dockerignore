@@ -1,0 +1,8 @@
+.gitignore
+.dockerignore
+.env
+.vscode/
+**/.DS_Store
+local_data/
+pkg/
+*.egg-info/

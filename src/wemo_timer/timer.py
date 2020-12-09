@@ -1,24 +1,24 @@
 import logging
 import random
 from datetime import date, datetime, time, timedelta, timezone
-from apscheduler.events import EVENT_JOB_EXECUTED
+from typing import Any
 
 import click
+import pytz
+import pywemo
+import tenacity
+from apscheduler.events import EVENT_JOB_EXECUTED, JobExecutionEvent
+from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.job import Job
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.executors.pool import ThreadPoolExecutor
 from apscheduler.triggers.cron import CronTrigger
-from apscheduler.events import JobExecutionEvent
 from dynaconf import Dynaconf
 from flask import Flask, jsonify
 from pint import UnitRegistry
-import pytz
-from werkzeug.exceptions import NotFound
-import pywemo
-import tenacity
-from tenacity.wait import wait_fixed, wait_random
 from tenacity.before_sleep import before_sleep_log
 from tenacity.stop import stop_after_delay
+from tenacity.wait import wait_fixed, wait_random
+from werkzeug.exceptions import NotFound
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -141,7 +141,7 @@ def create_jobs(transitions: list[dict[str, datetime]]) -> None:
                               max_instances=1)
 
 
-def serialise_job(job: Job) -> dict[str, str]:
+def serialise_job(job: Job) -> dict[str, Any]:
     return {
         "id": job.id,
         "name": job.name,
@@ -216,21 +216,22 @@ def executed_job(event: JobExecutionEvent):
               type=click.Choice(['DEBUG', 'INFO', 'WARNING', 'ERROR'],
                                 case_sensitive=True))
 def start(verbosity):
+    fmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
     if verbosity:
-        logging.basicConfig(level=verbosity)
+        logging.basicConfig(level=verbosity, format=fmt)
     else:
-        logging.basicConfig(level=settings.log_level)
+        logging.basicConfig(level=settings.log_level, format=fmt)
+
+    _LOGGER.info(settings.to_dict())
 
     scheduler.add_listener(executed_job, EVENT_JOB_EXECUTED)
 
-    scheduler.add_job(
-        generate_transitions,
-        trigger=CronTrigger(second=50),  # TODO: update init_time
-        max_instances=1)
+    _init_time = time.fromisoformat(settings.init_time)
+    scheduler.add_job(generate_transitions,
+                      trigger=CronTrigger(hour=_init_time.hour,
+                                          minute=_init_time.minute,
+                                          second=_init_time.second),
+                      max_instances=1)
 
     scheduler.start()
     app.run(host="localhost", port=8080, debug=False)
-
-
-if __name__ == '__main__':
-    start()
