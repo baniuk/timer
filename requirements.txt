@@ -1,0 +1,26 @@
+APScheduler==3.6.3
+certifi==2020.11.8
+chardet==3.0.4
+click==7.1.2
+dynaconf==3.1.2
+Flask==1.1.2
+idna==2.10
+ifaddr==0.1.7
+itsdangerous==1.1.0
+Jinja2==2.11.2
+MarkupSafe==1.1.1
+packaging==20.7
+Pint==0.16.1
+pyaml==20.4.0
+pyparsing==2.4.7
+pytz==2020.4
+pywemo @ git+https://github.com/pavoni/pywemo.git@785b95f7f115104a7b8dcfd78b72e98144ce798b
+PyYAML==5.3.1
+requests==2.25.0
+six==1.15.0
+tenacity==6.2.0
+tzlocal==2.1
+urllib3==1.26.2
+Werkzeug==1.0.1
+wincertstore==0.2
+yapf==0.30.0
