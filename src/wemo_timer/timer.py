@@ -1,5 +1,6 @@
 import logging
 import random
+import sys
 from datetime import date, datetime, time, timedelta, timezone
 from typing import Any
 
@@ -204,9 +205,11 @@ def executed_job(event: JobExecutionEvent):
 def start(verbosity):
     fmt = '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'
     if verbosity:
-        logging.basicConfig(level=verbosity, format=fmt)
+        logging.basicConfig(level=verbosity, format=fmt, stream=sys.stderr)
     else:
-        logging.basicConfig(level=settings.log_level, format=fmt)
+        logging.basicConfig(level=settings.log_level,
+                            format=fmt,
+                            stream=sys.stderr)
 
     _LOGGER.info(settings.to_dict())
 
