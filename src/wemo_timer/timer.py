@@ -46,7 +46,7 @@ scheduler.configure(job_defaults=job_defaults,
 def wemo_on():
     @tenacity.retry(wait=wait_fixed(10) + wait_random(-2, 2),
                     stop=stop_after_delay(60 * 60),
-                    before_sleep_log=before_sleep_log(_LOGGER, logging.INFO))
+                    before_sleep=before_sleep_log(_LOGGER, logging.INFO))
     def discover_and_on():
         address = settings.wemo_address
         port = pywemo.ouimeaux_device.probe_wemo(address)
@@ -61,7 +61,7 @@ def wemo_on():
 
 def wemo_off():
     @tenacity.retry(wait=wait_fixed(10),
-                    before_sleep_log=before_sleep_log(_LOGGER, logging.INFO))
+                    before_sleep=before_sleep_log(_LOGGER, logging.INFO))
     def discover_and_off():
         address = settings.wemo_address
         port = pywemo.ouimeaux_device.probe_wemo(address)
