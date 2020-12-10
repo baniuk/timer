@@ -55,6 +55,7 @@ def wemo_on():
         _LOGGER.info("Called on on %s", device)
 
     discover_and_on()
+    return "ok"
 
 
 def wemo_off():
@@ -69,21 +70,6 @@ def wemo_off():
         _LOGGER.info("Called off on %s", device)
 
     discover_and_off()
-
-
-def on_job() -> dict[str, str]:
-    """
-    This should block until executed successfully.
-    """
-    _LOGGER.info("Executing on job")
-    return "ok"
-
-
-def off_job() -> dict[str, str]:
-    """
-    This should block until executed successfully.
-    """
-    _LOGGER.info("Executing off job")
     return "ok"
 
 
@@ -122,7 +108,7 @@ def create_jobs(transitions: list[dict[str, datetime]]) -> None:
     for transition in transitions:
         _LOGGER.info("Creating transition %s", transition)
         if off := transition.get('off'):
-            scheduler.add_job(off_job,
+            scheduler.add_job(wemo_off,
                               trigger=CronTrigger(year=off.year,
                                                   month=off.month,
                                                   day=off.day,
@@ -131,7 +117,7 @@ def create_jobs(transitions: list[dict[str, datetime]]) -> None:
                                                   second=off.second),
                               max_instances=1)
         if on := transition.get('on'):
-            scheduler.add_job(on_job,
+            scheduler.add_job(wemo_on,
                               trigger=CronTrigger(year=on.year,
                                                   month=on.month,
                                                   day=on.day,
